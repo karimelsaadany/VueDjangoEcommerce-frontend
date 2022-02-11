@@ -1,43 +1,85 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header>
       <q-toolbar>
         <q-btn
           flat
-          dense
           round
+          dense
           icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
+          class="lt-md"
+          @click="toggLeftDrawer"
         />
-
-        <q-toolbar-title>
-          Quasar App
+        <q-toolbar-title
+          shrink
+        >
+          VueDjangoEcommerce
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-space />
+        <q-tabs
+          v-model="tab"
+          class="q-mr-xs gt-sm"
+        >
+          <q-route-tab
+            label="Summer"
+            :to="{name: 'summer'}"
+            exact
+            no-caps
+          />
+          <q-route-tab
+            label="Winter"
+            :to="{name: 'winter'}"
+            exact
+            no-caps
+          />
+        </q-tabs>
+        <div class="q-gutter-sm gt-sm">
+          <q-btn
+            color="white"
+            text-color="black"
+            label="Log in"
+            :to="{name: 'login'}"
+          />
+          <q-btn
+            color="secondary"
+            label="Cart"
+            icon="shopping_cart"
+            :to="{name: 'cart'}"
+          />
+        </div>
       </q-toolbar>
     </q-header>
 
     <q-drawer
       v-model="leftDrawerOpen"
-      show-if-above
+      side="left"
       bordered
+      class="lt-md"
     >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
-
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
+       <q-list>
+          <div
+            v-for="menuItem in menuList"
+            :key="menuItem"
+          >
+            <q-item
+              clickable
+              v-ripple
+              :to="{name: menuItem.name}"
+            >
+              <q-item-section>
+                {{ menuItem.label }}
+              </q-item-section>
+            </q-item>
+            <q-separator :key="'sep' + index"  v-if="menuItem.separator" />
+          </div>
+        </q-list>
     </q-drawer>
+
+    <q-footer>
+      <q-toolbar>
+        <q-toolbar-title class="text-center">Copyright (c) 2021</q-toolbar-title>
+      </q-toolbar>
+    </q-footer>
 
     <q-page-container>
       <router-view />
@@ -46,72 +88,54 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
-
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
-
-import { defineComponent, ref } from 'vue'
-
-export default defineComponent({
+export default {
   name: 'MainLayout',
-
-  components: {
-    EssentialLink
+  data () {
+    return {
+      menuList: [
+        {
+          name: 'home',
+          label: 'Home',
+          separator: false
+        },
+        {
+          name: 'summer',
+          label: 'Summer',
+          separator: false
+        },
+        {
+          name: 'winter',
+          label: 'Winter',
+          separator: true
+        },
+        {
+          name: 'login',
+          label: 'Log In',
+          separator: false
+        },
+        {
+          name: 'cart',
+          label: 'Cart',
+          separator: false
+        }
+      ],
+      leftDrawerOpen: false,
+      tab: null
+    }
   },
 
-  setup () {
-    const leftDrawerOpen = ref(false)
-
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+  methods: {
+    toggLeftDrawer () {
+      this.leftDrawerOpen = !this.leftDrawerOpen
     }
   }
-})
+}
 </script>
+
+<style>
+
+.q-tab {
+  max-width: 80px;
+}
+
+</style>
